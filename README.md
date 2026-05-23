@@ -100,3 +100,8 @@ Found a bug, a typo, or want to add a chapter? PRs are welcome.
 ## ⭐ If This Helped You
 
 Give the repo a star — it helps others find it.
+
+
+
+THE HTML FILE HAS ABOUT 3 THOUSANDS LINE OF CODE SO IT DOSENT LOAD IN GIT HUB SO FORK THE REPO INSTANTLY . 
+
